@@ -18,8 +18,8 @@ public class JwtTokenUtil {
 
     public static final long JWT_TOKEN_VALIDITY = 5*60*60;
 
-    @Value("${jwt.secret}")
-    private String secret;
+    @Value("jwt.secret")
+    private String secretKey;
 
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
@@ -28,13 +28,13 @@ public class JwtTokenUtil {
                 .setSubject(userName)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY*1000))
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getSubject();
@@ -42,7 +42,7 @@ public class JwtTokenUtil {
 
     public Date getExpirationDateFromToken(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
         return claims.getExpiration();

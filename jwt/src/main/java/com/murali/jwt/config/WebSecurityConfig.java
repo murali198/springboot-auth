@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         log.debug("configure web security..");
         httpSecurity.csrf().disable()
+                .httpBasic().realmName("JWT Token Auth").and()
                 .authorizeRequests().antMatchers("/login").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().authenticationEntryPoint(authEntryPoint).and()
